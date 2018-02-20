@@ -2,12 +2,12 @@
 
 (function(global) {
 
-  global.JS.notify = Object.create({
+ global.JS.exd({
 
     message :  function(mess) {
          alert('Hello ' + mess);
     }
 
- });
-
+  });
+    
 })(window);
