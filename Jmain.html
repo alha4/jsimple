@@ -5,22 +5,19 @@
 <title>jsimple v 1/0</title>
 <meta name="viewport" content="scale=1.0,width=device-width">
 <script src="jsimple.js"></script>
+<script src="jplugin.js"></script>
 </head>
 <body>
-
-<div class="template"></div>
 <button id="btn">command</button>
 <script>
-  JS.module("jplugin");
-
-  JS.event('#btn','click',function(e){
-
-    JS.toggleClass(e.target,'new_class');
+ JS.event('#btn','click',function(e){
+   
+   JS.toggleClass(e.target,'new_class');
     
-   // notify.message('Web ninzia');
-    console.log(JS);
-  });
+   JS.notify.message('Web ninzia');
 
+ });
+  
 </script>
 </body>
 </html>
