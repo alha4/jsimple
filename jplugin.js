@@ -1,15 +1,13 @@
 "use strict";
 
 (function(global) {
-  const JSPlugin = Object.create({
 
-     message :  function(mess) {
-          alert('Hello ' + mess);
-     }
-  });
+  global.JS.notify = Object.create({
 
-  global.JS.notify = JSPlugin;
+    message :  function(mess) {
+         alert('Hello ' + mess);
+    }
 
-  return JSPlugin;
-   
+ });
+
 })(window);
