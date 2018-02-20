@@ -2,7 +2,9 @@
 
 (function(global) {
 
-  const JSS = {
+  let JSS = function() {};
+
+  JSS.prototype = {
 
     $ : function(domPath) {
       
@@ -41,11 +43,15 @@
 
             this.$('head').appendChild(script);     
 
-    }
+    },
 
+    exd : function(...objects) {
+
+      return Object.assign(this.__proto__ , ...objects);
+   }
 
   };
 
-  return global.JS = JSS;
+  return global.JS = new JSS();
 
 })(window);
