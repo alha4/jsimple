@@ -52,6 +52,8 @@
 
   };
 
-  return global.JS = new JSS();
+  global.JS = new JSS();
+
+  return JS = global.JS;
 
 })(window);
