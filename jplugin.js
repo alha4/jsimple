@@ -2,7 +2,7 @@
 
 (function(global) {
 
- global.JS.exd({
+  JS.exd({
 
     message :  function(mess) {
          alert('Hello ' + mess);
