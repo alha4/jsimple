@@ -74,20 +74,49 @@
 
       if(!"addEventListener" in document) {
 
-        this.$(element).attachEvent('on' + type,(event) => {
+        if(this.$(element)) {
+          
+          this.$(element).attachEvent('on' + type,(event) => {
 
                callback(window.event);
          
               });
+        }
 
       } else {
 
-        this.$(element).addEventListener(type,(event) => {
+        if(this.$(element)) {
+
+           this.$(element).addEventListener(type,(event) => {
 
                callback(event);
               
-             },capture);
+              },capture);
+        }
      }
+    },
+
+    liveEvent  : function(element,type,callback,capture = false,nodeObserver = false) {
+
+      let observer = new MutationObserver(function(mutations) {
+
+            JS.event(element,type,callback,capture);
+
+          }),
+
+          target = this.$(nodeObserver) || document.body,
+
+          config = {attributes: false, childList: true, subtree : true, characterData: false}
+
+          observer.observe(target, config);
+    },
+
+    dispatchEvent : function(element,eventType) {
+
+       let event = new Event(eventType,{bubbles: true, cancelable: false});
+
+       return this.$(element).dispatchEvent(event);
+
     },
 
     addClass : function(element,className) {
@@ -111,8 +140,8 @@
 
         let fetch_params = {
 
-            method : params.method,
-            body   : params.data,
+            method : params.method ? params.method : "GET",
+            body   : params.method == 'POST' ? params.data : false,
 
          },
 
@@ -207,6 +236,9 @@
               } 
             };
           } 
+
+          params.method = params.method ? params.method : "GET";
+
           http.open(params.method, params.url, true);  
 
           if(params.method == 'POST' && !params.isFile) {
