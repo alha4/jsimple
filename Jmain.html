@@ -3,21 +3,39 @@
 <head>
 <meta charset="utf-8">
 <title>jsimple v 1/0</title>
-<meta name="viewport" content="scale=1.0,width=device-width">
+<meta name="viewport" content="width=device-width">
 <script src="jsimple.js"></script>
 <script src="jplugin.js"></script>
 </head>
 <body>
-<button id="btn">command</button>
-<script>
- JS.event('#btn','click',function(e){
-   
-   JS.toggleClass(e.target,'new_class');
-    
-   JS.message('Web ninzia');
 
- });
-  
+<div class="template">
+  <div class="first"></div>
+  <div class="next"></div>
+  <div class="last"></div>
+</div>
+<form id="file">
+<input type="file" name="picture" id="myfile">
+</form>
+<button id="btn">command</button>
+<div id="prg"></div>
+<img src="" id="preview">
+<script>
+
+  JS.event('#btn','click',function(e){
+
+    JS.uploadFile({ url : "http://localhost/", file : '#myfile',success : function(resp,head,file){
+
+       JS.$('#preview').src = file;
+
+    }, progress : function(bytes){
+
+       JS.$('#prg').innerHTML = bytes;
+
+    }, accept : ["image/jpg","image/png"]});
+
+  });
+
 </script>
 </body>
 </html>
