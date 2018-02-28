@@ -77,8 +77,9 @@
         if(this.$(element)) {
           
           this.$(element).attachEvent('on' + type,(event) => {
+              
+              callback(window.event);
 
-               callback(window.event);
          
               });
         }
@@ -106,7 +107,7 @@
 
           target = this.$(nodeObserver) || document.body,
 
-          config = {attributes: false, childList: true, subtree : true, characterData: false}
+          config = {attributes: false, childList: true, subtree : true, characterData: true}
 
           observer.observe(target, config);
     },
@@ -116,6 +117,37 @@
        let event = new Event(eventType,{bubbles: true, cancelable: false});
 
        return this.$(element).dispatchEvent(event);
+
+    },
+
+    documentSize : function() {
+
+      let scrollHeight = Math.max(
+        document.body.scrollHeight, document.documentElement.scrollHeight,
+        document.body.offsetHeight, document.documentElement.offsetHeight,
+        document.body.clientHeight, document.documentElement.clientHeight
+      ),scrollWidth = Math.max(
+        document.body.scrollWidth, document.documentElement.scrollWidth,
+        document.body.offsetWidth, document.documentElement.offsetWidth,
+        document.body.clientWidth, document.documentElement.clientWidth
+      );
+
+      return {height : scrollHeight, width: scrollWidth};
+    },
+
+    windowScroll : function() {
+
+     let scrollTop  = window.pageYoffset || document.documentElement.scrollTop,
+         scrollleft = window.pageXoffset || document.documentElement.scrollLeft;
+
+      return {x : scrollleft, y : scrollTop};
+    },
+
+    style : function(nodePath,styleCode) {
+
+       let computedStyle = window.getComputedStyle(this.$(nodePath));
+
+       return computedStyle[styleCode];
 
     },
 
@@ -294,6 +326,30 @@
 
            this.ajax({url : params.url, method : "POST", xhr : params.xhr, isFile : true, data : formData, success : params.success, onprogress : params.process});
       }
+    },
+   
+    serverEvent : function(params) {
+
+     const eventSource = new EventSource(params.url,{
+            withCredentials: params.cors ? true : false
+           });
+
+           eventSource.onmessage = function(e) {
+               
+                params.onmessage(e.data);
+          };
+
+          eventSource.onopen = function(e) {
+            console.log("Соединение открыто");
+          };
+          
+          eventSource.onerror = function(e) {
+            if (this.readyState == EventSource.CONNECTING) {
+              console.log("Соединение порвалось, пересоединяемся...");
+            } else {
+              console.log("Ошибка, состояние: " + this.readyState);
+            }
+          };
     },
 
     module : function(path) {
