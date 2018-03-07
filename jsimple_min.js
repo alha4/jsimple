@@ -75,7 +75,7 @@
 
           }
           
-          return  last;
+          return  first;
     },
 
     next(domPath) {
