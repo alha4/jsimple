@@ -16,7 +16,9 @@
        
     nodeTypes : {  
       NODE_ELEMENT : 1,
-      NODE_TEXT : 3   
+      NODE_ATTRIBUTE : 2,
+      NODE_TEXT : 3,
+      NODE_DOCUMENT : 9
     },
 
     $(domPath) {
@@ -41,7 +43,7 @@
 
         let prev = this.$(domPath).previousSibling;
 
-        if(prev.nodeType !== 1) {
+        if(prev.nodeType !== this.nodeTypes.NODE_ELEMENT) {
 
            return this.prev(prev);
         }
@@ -54,7 +56,7 @@
  
       let last = this.$(domPath).lastChild;
 
-          if(last.nodeType !== 1) {
+          if(last.nodeType !== this.nodeTypes.NODE_ELEMENT) {
 
             return this.prev(last);
 
@@ -67,7 +69,7 @@
 
         let first = this.$(domPath).firstChild;
 
-          if(first.nodeType !== 1) {
+          if(first.nodeType !== this.nodeTypes.NODE_ELEMENT) {
 
             return this.next(first);
 
@@ -80,7 +82,7 @@
     
       let next = this.$(domPath).nextSibling;
 
-        if(next.nodeType !== 1) {
+        if(next.nodeType !== this.nodeTypes.NODE_ELEMENT) {
 
            return this.next(next);
         }
@@ -357,6 +359,41 @@
 
         http.send(params.data);
       }
+    },
+
+    formValidate(formPath,resolve,reject = (error)=>error) {
+
+       const form   = this.$(formPath),
+             inputs = (form).querySelectorAll("input[required]");
+
+       var   input_errors = [];
+
+       this.event(form,"submit",function(e){
+
+            for(let input of inputs) {
+
+               if(!input.checkValidity()) {
+                 
+                   input_errors.push(input);
+               }
+
+            }
+       
+            if(input_errors.length > 0) {
+
+               e.preventDefault();
+
+               reject(input_errors);
+
+               return false;
+            } 
+
+            e.preventDefault();
+
+            resolve();
+
+            return false;
+      });          
     },
 
     uploadFile(params) {
