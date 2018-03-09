@@ -75,7 +75,7 @@
 
           }
           
-          return  first;
+          return  last;
     },
 
     next(domPath) {
@@ -234,9 +234,29 @@
       return node.getAttribute("data-" + key);
     },
 
-    ajax(params) {
+    webWorker(filePath,callback) {
 
+      let worker = new Worker(filePath);
+
+      this.event(worker, 'message', function(e) {
+
+           callback(e.data);
+
+      }, false);
+
+      return worker;
+
+    },
+
+    ajax(params) {
+    
       if(("fetch" in window) && params.xhr !== true) {
+
+        if(typeof params.data == 'object') {
+
+           params.data = JSON.stringify(params.data);
+
+        }
 
         let fetch_params = {
 
@@ -249,7 +269,16 @@
 
          if(params.method == 'POST' && !params.isFile) {
 
-             headers.append("Content-type","application/x-www-form-urlencoded; charset=UTF-8");
+             if(params.type == 'json') {
+
+                headers.append("Content-type","application/json; charset=UTF-8");
+
+             } else {
+
+                headers.append("Content-type","application/x-www-form-urlencoded; charset=UTF-8");
+                headers.append("Accept", "application/json, text/plain, */*");
+
+             }
            
          }
          if(params.cors) {
@@ -288,8 +317,15 @@
 
             } else {
             
-              params.success(response.body,response.headers);
-           
+              if(params.type != 'text') {
+
+                response.body.then( (body) =>  params.success(body,response.headers) );
+
+              } else {
+                
+                params.success(response.body,response.headers);
+
+              }
             }
           
          }).catch(function(error){
@@ -472,6 +508,8 @@
   };
 
   global.JS = new JSS();
+  
+  Object.freeze(global.JS);
 
   return JS = global.JS;
 
