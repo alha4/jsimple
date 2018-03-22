@@ -39,6 +39,18 @@
 
     },
 
+    each(collection,callback) {
+
+      const items = this.$(collection);
+
+      for(let item of items) {
+
+             callback(item);
+
+      }
+
+    },
+
     prev(domPath) {
 
         let prev = this.$(domPath).previousSibling;
@@ -90,6 +102,41 @@
         return next;
     },
 
+    beforeNode(newNode,prevNode) {
+
+
+      return (this.$(newNode).parentNode).insertBefore(newNode,prevNode);
+
+    },
+
+    replaceNode(newNode,prevNode) {
+
+       return (this.$(newNode).parentNode).replaceChild(newNode,prevNode);
+
+    },
+
+    isHidden(elem) {
+
+      return !elem.offsetWidth && !elem.offsetHeight;
+
+    },
+
+    width(elm) {
+
+      return parseInt(this.$(elm).clientWidth);
+
+    },
+
+    height(elm) {
+
+      return parseInt(this.$(elm).clientHeight);
+
+    }, 
+    scrollWidth(elm) {
+ 
+      return parseInt(this.$(elm).scrollWidth);
+
+    },
     event(element,type,callback,capture = false) {
 
       if(!"addEventListener" in document) {
